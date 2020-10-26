@@ -104,8 +104,14 @@ exports.lambdaHandler = async (event, context) => {
             }
         }
         response = {
-            'statusCode': 200,
-            'body': JSON.stringify({
+            statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin" : "*",
+                "Access-Control-Allow-Methods" : "*",
+                "Access-Control-Allow-Headers" : "*",
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({
                 message: 'OK',
                 data: JSON.stringify(out)
             })
@@ -116,8 +122,23 @@ exports.lambdaHandler = async (event, context) => {
             'statusCode': 500,
             'body': JSON.stringify({
                 message: 'Error' + err,
-            })
+            }),
+            headers: {
+                "x-custom-header" : "my custom header value"
+            },
         }
+        response = {
+            statusCode: 500,
+            headers: {
+                "Access-Control-Allow-Origin" : "*",
+                "Access-Control-Allow-Methods" : "*",
+                "Access-Control-Allow-Headers" : "*",
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({
+                message: 'Error' + err,
+            })
+        };
     }
 
     return response
