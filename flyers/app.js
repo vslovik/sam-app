@@ -20,11 +20,11 @@ let response;
  * @returns {Object} object - API Gateway Lambda Proxy Output Format
  * 
  */
-exports.lambdaHandler = async (event, context) => {
+exports.lambdaHandler = async (event) => {
     try {
 
-        const page = (event.queryStringParameters && event.queryStringParameters.page) ? event.queryStringParameters.page : 1;
-        const limit = (event.queryStringParameters && event.queryStringParameters.limit) ? event.queryStringParameters.limit : DEFAULT_LIMIT;
+        const page = parseInt((event.queryStringParameters && event.queryStringParameters.page) ? event.queryStringParameters.page : 1);
+        const limit = parseInt((event.queryStringParameters && event.queryStringParameters.limit) ? event.queryStringParameters.limit : DEFAULT_LIMIT);
 
         const parse = (line) => {
             var id, title, start, end, published, retailer, category;
@@ -73,12 +73,12 @@ exports.lambdaHandler = async (event, context) => {
         const rs = fs.createReadStream(FILENAME);
         const rl = readline.createInterface({ input: rs });
 
-        let from = (page - 1) * limit + 1;
+        let from = (page - 1) * limit;
         let to = from + limit;
     
         var first = true;
 
-        let i = 1
+        let i = 0
         var out = []
         for await (const line of rl) {
             if (first) {
@@ -113,7 +113,7 @@ exports.lambdaHandler = async (event, context) => {
             },
             body: JSON.stringify({
                 message: 'OK',
-                data: JSON.stringify(out)
+                data: out
             })
         }
     } catch (err) {
